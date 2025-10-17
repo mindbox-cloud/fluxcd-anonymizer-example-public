@@ -1,0 +1,132 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: anonymizer
+  namespace: anonymizer
+spec:
+  type: "oci"
+  interval: 168h
+  url: oci://cr.yandex/crp2cvbrp76d7dmfegco/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: anonymizer
+  namespace: anonymizer
+spec:
+  chart:
+    spec:
+      chart: anonymizer-app
+      version: '2.0.2'
+      sourceRef:
+        kind: HelmRepository
+        name: anonymizer
+  dependsOn:
+    - name: anonymizer-init
+  interval: 168h
+  values:
+    name: anonymizer
+    environmentName: staging
+    runtimeEnvironment: staging
+    packageVersion: 1.0.229 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    jobCorrelationId: "tobedeleted"
+    product: anonymizer
+    services:
+      name: anonymizer-services
+      imageName: anonymizer_services
+      replicas: "1"
+      resources:
+        limits:
+          memory: "512Mi"
+        requests:
+          cpu: "500m"
+          memory: "256Mi"
+      ingressRoute:
+        enabled: false
+      reliable: false
+      envFrom:
+        - secretRef:
+            name: manual-secrets
+    lrt:
+      imageName: anonymizer_worker
+      roles:
+        - replicas: "1"
+          resources:
+            limits:
+              memory: "1024Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          nodeSelector:
+            preemptible: true
+          envFrom:
+            - secretRef:
+                name: manual-secrets
+    containerRegistry: ru
+    zoneIndex: yandex
+    commonEnv:
+      - name: PostgreSqlDatabase__username
+        valueFrom:
+          secretKeyRef:
+            name: db-anonymizer-anonymizer-user-password
+            key: username
+      - name: PostgreSqlDatabase__password
+        valueFrom:
+          secretKeyRef:
+            name: db-anonymizer-anonymizer-user-password
+            key: password
+      - name: Application__Tenant
+        value: "anonym-ts-mpg"
+      - name: PostgreSqlDatabase__ConnectionString
+        value: "Host=rc1a-bsv50mn1q0ap2tjc.mdb.yandexcloud.net;Database=anonymizer;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
+      - name: OperationsApi__Url
+        value: "https://api-staging.mindbox.ru"
+      - name: MailingsRuntimeApi__Url
+        value: "https://mailings-runtime.a.mindbox.ru"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: anonymizer-init
+  namespace: anonymizer
+spec:
+  chart:
+    spec:
+      chart: anonymizer-app-init
+      version: '1.0.3'
+      sourceRef:
+        kind: HelmRepository
+        name: anonymizer
+  interval: 168h
+  values:
+    name: anonymizer
+    environmentName: staging
+    runtimeEnvironment: staging
+    packageVersion: 1.0.229 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    jobCorrelationId: "tobedeleted"
+    checkRollback:
+      enabled: false
+    initialization:
+      enabled: false
+    sqlmigrator:
+      imageName: anonymizer_migrator
+    containerRegistry: ru
+    migrations:
+      enabled: true
+      env:
+      - name: PostgreSqlDatabase__username
+        valueFrom:
+          secretKeyRef:
+            name: db-anonymizer-anonymizer-user-password
+            key: username
+      - name: PostgreSqlDatabase__password
+        valueFrom:
+          secretKeyRef:
+            name: db-anonymizer-anonymizer-user-password
+            key: password
+      - name: Application__Tenant
+        value: "anonym-ts-mpg"
+      - name: PostgreSqlDatabase__ConnectionString
+        value: "Host=rc1a-bsv50mn1q0ap2tjc.mdb.yandexcloud.net;Database=anonymizer;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
+      - name: PostgreSqlDatabase__ApplyMaintenanceMigrations
+        value: "false"

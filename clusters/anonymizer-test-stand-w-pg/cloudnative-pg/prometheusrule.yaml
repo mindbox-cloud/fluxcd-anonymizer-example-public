@@ -1,0 +1,51 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cloudnative-pg-operator-rules
+  namespace: cloudnative-pg-operator
+  labels:
+    prometheus: k8s
+    role: alert-rules
+spec:
+  groups:
+    - name: cloudnative-pg-operator-rules
+      rules:
+        - alert: CloudNativePGOperatorUnhealthy
+          annotations:
+            summary: "Deployment {{`{{ $labels.deployment }}`}} is unhealthy."
+            message: The CloudNativePG Operator in {{`{{ $labels.cluster }}`}}/{{`{{ $labels.namespace }}`}} is down.
+            runbook_url: "https://www.notion.so/mindbox-cloud/CloudNativePGOperatorUnhealthy-1b3d64d9addf802db6a0cc8327619777"
+          expr: kube_deployment_status_replicas_ready{deployment="cloudnative-pg",namespace="cloudnative-pg-operator"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            product: platform
+            feature: postgresql
+
+        - alert: CloudNativePGOperatorHighErrorRate
+          annotations:
+            summary: "The CloudNativePG operator reconciliation error for {{`{{ $labels.exported_namespace }}`}}"
+            message: The CloudNativePG operator has a high reconciliation error rate.
+            runbook_url: "https://www.notion.so/mindbox-cloud/CloudNativePGOperatorHighErrorRate-13dd64d9addf81fba83ec5972a802989"
+          expr: sum(increase(controller_runtime_reconcile_errors_total{namespace="cloudnative-pg-operator"}[1m])) > 0
+          for: 10m
+          labels:
+            severity: high
+            product: platform
+            feature: postgresql
+
+        - alert: CloudNativePGOOMKilled
+          annotations:
+            summary: "CloudNativePG container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}} has been OOMKilled multiple times"
+            message: "The CloudNativePG container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}} in namespace {{`{{ $labels.namespace }}`}} has been OOMKilled more than once in the past 10 minutes. Current restart count increase: {{`{{ $value }}`}}. This indicates memory pressure and may affect database operations."
+            runbook_url: "https://www.notion.so/mindbox-cloud/CloudNativePGOperatorUnhealthy-1b3d64d9addf802db6a0cc8327619777"
+          expr: |-
+            (sum by (namespace, pod, container) (increase(kube_pod_container_status_restarts_total{namespace="cloudnative-pg-operator",container!="",pod=~"cloudnative-pg.*"}[10m])) > 1)
+            and on (namespace, pod, container)
+            max_over_time(kube_pod_container_status_last_terminated_reason{namespace="cloudnative-pg-operator",reason="OOMKilled",pod=~"cloudnative-pg.*"}[10m]) == 1
+          for: 5m
+          labels:
+            severity: high
+            product: platform
+            feature: postgresql

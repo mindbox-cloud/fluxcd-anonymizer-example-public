@@ -1,0 +1,10 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ClusterImageCatalog
+metadata:
+  name: postgresql
+  namespace: cloudnative-pg-operator
+spec:
+  images:
+    - major: 17
+      image: cr.yandex/crp2cvbrp76d7dmfegco/postgresql:17.5.1-bookworm
