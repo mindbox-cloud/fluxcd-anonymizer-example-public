@@ -1,16 +1,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: anonymizer-loadbalancer
+  name: anonymizer-regular-loadbalancer
   namespace: anonymizer
   labels:
-    app: anonymizer-services
-    environment: staging
+    app: anonymizer-services-regular
 spec:
   type: LoadBalancer
   selector:
-    app: anonymizer-services
-    environment: staging
+    app: anonymizer-services-regular
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonymizer-important-loadbalancer
+  namespace: anonymizer
+  labels:
+    app: anonymizer-services-important
+spec:
+  type: LoadBalancer
+  selector:
+    app: anonymizer-services-important
   ports:
     - name: http
       protocol: TCP
