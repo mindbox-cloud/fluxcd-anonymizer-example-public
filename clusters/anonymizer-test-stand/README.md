@@ -35,6 +35,19 @@ data:
     <example>==
   MindboxAuth__MindboxPublicKey: >-
     <example>==
+  S3__Private__AccessKey: <example>==
+  S3__Private__SecretKey: <example>==
+  S3__Public__AccessKey: <example>==
+  S3__Public__SecretKey: <example>==
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: teleport-secret
+  namespace: anonymizer
+data:
+  auth_token: <example>==
 type: Opaque
 ---
 apiVersion: v1
@@ -50,7 +63,9 @@ type: kubernetes.io/basic-auth
 
 ### Описание секретов
 
-- **manual-secrets** - секреты для авторизации между сервисами Mindbox и anonymizer. Это две пары ключей, паблик от пары ключей Mindbox вам предоставит менеджер, вашу пару необходимо сгенерировать по инструкции [docs/key-generation.md](../../docs/key-generation.md), приватную часть положить в секрет, а публичную передать менеджеру Mindbox.
+- **manual-secrets** - секреты для авторизации между сервисами Mindbox и anonymizer, а также s3. Паблик от пары ключей Mindbox вам предоставит менеджер, вашу пару необходимо сгенерировать по инструкции [docs/key-generation.md](../../docs/key-generation.md), приватную часть положить в секрет, а публичную передать менеджеру Mindbox.
+Ключи к s3 - обычные статик ключи для s3, обе пары никак не передаются в Mindbox, но наше облако будет ходить в public бакет по signed url. 
+- **teleport-secret** - токен для teleport агента, предоставляется менеджером Mindbox.
 - **db-anonymizer-anonymizer-user-password** - логин и пароль пользователя PostgreSQL
 
 ### 4. Завершение деплоя

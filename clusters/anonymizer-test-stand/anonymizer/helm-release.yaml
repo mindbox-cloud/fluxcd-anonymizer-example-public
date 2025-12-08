@@ -17,116 +17,126 @@ spec:
   chart:
     spec:
       chart: anonymizer-app
-      version: '2.0.2'
+      version: '3.0.0'
       sourceRef:
         kind: HelmRepository
         name: anonymizer
-  dependsOn:
-    - name: anonymizer-init
   interval: 168h
   values:
-    name: anonymizer
-    environmentName: staging
-    runtimeEnvironment: staging
-    packageVersion: 1.0.229 # {"$imagepolicy": "flux-system:anonymizer:tag"}
-    jobCorrelationId: "tobedeleted"
-    product: anonymizer
+    # victoriametrics:  #will replace prometheus CRs with victoriametrics CRs
+    #   enabled: true
+    environmentName: sigma  #will be provided by Mindbox manager
+    tenant: anonymizer-demo  #will be provided by Mindbox manager
+    mandatoryEnv:
+      s3:
+        private:
+          serviceUrl: "https://s3.yandexcloud.net/"
+          bucketName: "anonymizer-test-stand-bucket"
+          accessKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Private__AccessKey
+          secretKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Private__SecretKey
+        public:
+          serviceUrl: "https://s3.yandexcloud.net/"
+          bucketName: "bucket-anonymizer-clients-public"
+          accessKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Public__AccessKey
+          secretKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Public__SecretKey
+      postgreSqlDatabase:
+        username:
+          valueFrom:
+            secretKeyRef:
+              name: db-anonymizer-anonymizer-user-password
+              key: username
+        password:
+          valueFrom:
+            secretKeyRef:
+              name: db-anonymizer-anonymizer-user-password
+              key: password
+        connectionString: "Host=c-c9q0iffnprn9ic4nqc9k.rw.mdb.yandexcloud.net ;Database=anonymizer-demo-v2;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
+      mindboxAuth:
+        anonymizerPrivateKey:
+          valueFrom:
+            secretKeyRef:
+              name: manual-secrets
+              key: MindboxAuth__AnonymizerPrivateKey
+        mindboxPublicKey:
+          valueFrom:
+            secretKeyRef:
+              name: manual-secrets
+              key: MindboxAuth__MindboxPublicKey
     services:
-      name: anonymizer-services
-      imageName: anonymizer_services
-      replicas: "1"
-      resources:
-        limits:
-          memory: "512Mi"
-        requests:
-          cpu: "500m"
-          memory: "256Mi"
-      ingressRoute:
-        enabled: false
-      reliable: false
-      envFrom:
-        - secretRef:
-            name: manual-secrets
-    lrt:
-      imageName: anonymizer_worker
+      # # Пример настройки affinity & tolerations
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: node-type
+      #           operator: In
+      #           values:
+      #           - compute-optimized
+      # tolerations:
+      # - key: "node-type"
+      #   operator: "Equal"
+      #   value: "compute-optimized"
+      #   effect: "NoSchedule"
       roles:
-        - replicas: "1"
+        regular:
+          replicas: "3"
+          resources:
+            limits:
+              memory: "512Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+        important:
+          replicas: "3"
+          resources:
+            limits:
+              memory: "512Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+    lrt:
+      # # Пример настройки affinity & tolerations
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: node-type
+      #           operator: In
+      #           values:
+      #           - compute-optimized
+      # tolerations:
+      # - key: "node-type"
+      #   operator: "Equal"
+      #   value: "compute-optimized"
+      #   effect: "NoSchedule"
+      roles:
+        default:
+          replicas: "3"
           resources:
             limits:
               memory: "1024Mi"
             requests:
-              cpu: "100m"
+              cpu: "800m"
               memory: "256Mi"
-          nodeSelector:
-            preemptible: true
-          envFrom:
-            - secretRef:
-                name: manual-secrets
-    containerRegistry: ru
-    zoneIndex: yandex
-    commonEnv:
-      - name: PostgreSqlDatabase__username
-        valueFrom:
-          secretKeyRef:
-            name: db-anonymizer-anonymizer-user-password
-            key: username
-      - name: PostgreSqlDatabase__password
-        valueFrom:
-          secretKeyRef:
-            name: db-anonymizer-anonymizer-user-password
-            key: password
-      - name: Application__Tenant
-        value: "anonym-ts-mpg"
-      - name: PostgreSqlDatabase__ConnectionString
-        value: "Host=rc1a-bsv50mn1q0ap2tjc.mdb.yandexcloud.net;Database=anonymizer;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
-      - name: OperationsApi__Url
-        value: "https://api-staging.mindbox.ru"
-      - name: MailingsRuntimeApi__Url
-        value: "https://mailings-runtime.a.mindbox.ru"
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: anonymizer-init
-  namespace: anonymizer
-spec:
-  chart:
-    spec:
-      chart: anonymizer-app-init
-      version: '1.0.3'
-      sourceRef:
-        kind: HelmRepository
-        name: anonymizer
-  interval: 168h
-  values:
-    name: anonymizer
-    environmentName: staging
-    runtimeEnvironment: staging
-    packageVersion: 1.0.229 # {"$imagepolicy": "flux-system:anonymizer:tag"}
-    jobCorrelationId: "tobedeleted"
-    checkRollback:
-      enabled: false
-    initialization:
-      enabled: false
-    sqlmigrator:
-      imageName: anonymizer_migrator
-    containerRegistry: ru
-    migrations:
-      enabled: true
-      env:
-      - name: PostgreSqlDatabase__username
-        valueFrom:
-          secretKeyRef:
-            name: db-anonymizer-anonymizer-user-password
-            key: username
-      - name: PostgreSqlDatabase__password
-        valueFrom:
-          secretKeyRef:
-            name: db-anonymizer-anonymizer-user-password
-            key: password
-      - name: Application__Tenant
-        value: "anonym-ts-mpg"
-      - name: PostgreSqlDatabase__ConnectionString
-        value: "Host=rc1a-bsv50mn1q0ap2tjc.mdb.yandexcloud.net;Database=anonymizer;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
-      - name: PostgreSqlDatabase__ApplyMaintenanceMigrations
-        value: "false"
+    # migrations:  #If u are using YC managed postgresql set PostgreSqlDatabase__ApplyMaintenanceMigrations env to false like this:
+    #   env:
+    #     - name: PostgreSqlDatabase__ApplyMaintenanceMigrations
+    #       value: "false"
