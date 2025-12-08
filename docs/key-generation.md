@@ -9,8 +9,8 @@
 ### 1. Генерация приватного ключа
 
 ```bash
-# Генерация приватного ключа RSA 2048 бит
-openssl genrsa -out anonymizer_private_key.pem 2048
+# Генерация приватного ключа RSA 4096 бит
+openssl genrsa -out anonymizer_private_key.pem 4096
 ```
 
 ### 2. Извлечение публичного ключа
