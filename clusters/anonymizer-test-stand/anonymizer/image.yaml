@@ -1,23 +1,23 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  name: anonymizer
+  name: anonymizer-chart
   namespace: flux-system
 spec:
-  image: cr.yandex/crp2cvbrp76d7dmfegco/anonymizer_services
+  image: cr.yandex/crp2cvbrp76d7dmfegco/helm-charts/anonymizer-app
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
-  name: anonymizer
+  name: anonymizer-chart
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: anonymizer
+    name: anonymizer-chart
   policy:
     semver:
-      range: 1.0.x
+      range: 3.x.x
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
