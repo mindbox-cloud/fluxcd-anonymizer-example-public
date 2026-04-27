@@ -140,3 +140,13 @@ spec:
     #   env:
     #     - name: PostgreSqlDatabase__ApplyMaintenanceMigrations
     #       value: "false"
+    # validation:  # Phone number validation settings — allowed country codes with min/max digit lengths (excluding country code)
+    #   phoneSettings:
+    #     allowedCountryCodes:
+    #       - code: "7"         # Russia / Kazakhstan
+    #         phoneMinLength: 10
+    #         phoneMaxLength: 10
+    #       - code: "375"       # Belarus
+    #         phoneMinLength: 9
+    #         phoneMaxLength: 9
+    #         phoneMaxLength: 8
