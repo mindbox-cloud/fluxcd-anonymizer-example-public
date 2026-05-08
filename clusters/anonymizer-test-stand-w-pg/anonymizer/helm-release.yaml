@@ -102,7 +102,7 @@ spec:
     name: anonymizer
     environmentName: staging
     runtimeEnvironment: staging
-    packageVersion: 1.0.229 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    packageVersion: 1.0.509 # {"$imagepolicy": "flux-system:anonymizer:tag"}
     jobCorrelationId: "tobedeleted"
     checkRollback:
       enabled: false
