@@ -54,12 +54,22 @@ data:
   attribute.access_key: <example>==
   attribute.secret_key: <example>==
 type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: oidc-credentials
+  namespace: anonymizer
+data:
+  client_secret: <example>==
+type: Opaque
 ```
 
 ### Описание секретов
 
 - **manual-secrets** - секреты для авторизации между сервисами Mindbox и anonymizer. Это две пары ключей, паблик от пары ключей Mindbox вам предоставит менеджер, вашу пару необходимо сгенерировать по инструкции [docs/key-generation.md](../../docs/key-generation.md), приватную часть положить в секрет, а публичную передать менеджеру Mindbox.
 - **sa-creds-anonymizer-test-stand-pg-bucket** - статичные ключи к S3 хранилищу для бекапов PostgreSQL
+- **oidc-credentials** - client secret OIDC-клиента в IdP. Значение предоставляет администратор IdP. Необходим только при использовании OIDC-аутентификации.
 
 ### 5. Завершение деплоя
 

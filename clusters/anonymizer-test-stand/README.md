@@ -59,6 +59,15 @@ data:
   password: <example>==
   username: <example>==
 type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: oidc-credentials
+  namespace: anonymizer
+data:
+  client_secret: <example>==
+type: Opaque
 ```
 
 ### Описание секретов
@@ -67,6 +76,7 @@ type: kubernetes.io/basic-auth
 Ключи к s3 - обычные статик ключи для s3, обе пары никак не передаются в Mindbox, но наше облако будет ходить в public бакет по signed url. 
 - **teleport-secret** - токен для teleport агента, предоставляется менеджером Mindbox.
 - **db-anonymizer-anonymizer-user-password** - логин и пароль пользователя PostgreSQL
+- **oidc-credentials** - client secret OIDC-клиента в IdP. Значение предоставляет администратор IdP. Необходим только при использовании OIDC-аутентификации.
 
 ### 4. Завершение деплоя
 

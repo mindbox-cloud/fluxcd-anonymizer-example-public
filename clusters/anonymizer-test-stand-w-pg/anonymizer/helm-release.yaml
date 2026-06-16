@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: anonymizer-app
-      version: '3.12.0'
+      version: '3.15.0'
       sourceRef:
         kind: HelmRepository
         name: anonymizer
@@ -83,6 +83,27 @@ spec:
         value: "https://api-staging.mindbox.ru"
       - name: MailingsRuntimeApi__Url
         value: "https://mailings-runtime.a.mindbox.ru"
+    # auth:  # Optional authentication via IdP — choose one protocol (OIDC or SAML), do not configure both
+    #
+    #   # Option 1: OIDC
+    #   protocol: "Oidc"
+    #   oidc:
+    #     clientId: "your-client-id"              # Client ID in IdP
+    #     clientSecret:
+    #       valueFrom:
+    #         secretKeyRef:
+    #           name: oidc-credentials
+    #           key: client_secret
+    #     wellKnownUrl: "https://your-idp.example.com/.well-known/openid-configuration"
+    #     callbackUrl: "https://anonymizer-regular.your-domain.com/auth/oidc/callback"
+    #
+    #   # Option 2: SAML
+    #   protocol: "Saml"
+    #   saml:
+    #     spEntityId: "your-sp-entity-id"         # Service Provider Entity ID
+    #     acsUrl: "https://anonymizer-regular.your-domain.com/saml/acs"
+    #     idpMetadataUrl: "https://your-idp.example.com/saml/descriptor"
+    #     idpCertificateThumbprint: "THUMBPRINT_HEX"  # IdP certificate thumbprint (hex)
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
