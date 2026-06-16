@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: anonymizer-app
-      version: '3.12.0'
+      version: '3.15.0'
       sourceRef:
         kind: HelmRepository
         name: anonymizer
@@ -28,7 +28,28 @@ spec:
     name: anonymizer
     environmentName: staging
     runtimeEnvironment: staging
-    packageVersion: 1.0.509 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    packageVersion: 1.0.553 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    # auth:  # Optional authentication via IdP — choose one protocol (OIDC or SAML), do not configure both
+    #
+    #   # Option 1: OIDC
+    #   protocol: "Oidc"
+    #   oidc:
+    #     clientId: "your-client-id"              # Client ID in IdP
+    #     clientSecret:
+    #       valueFrom:
+    #         secretKeyRef:
+    #           name: oidc-credentials
+    #           key: client_secret
+    #     wellKnownUrl: "https://your-idp.example.com/.well-known/openid-configuration"
+    #     callbackUrl: "https://anonymizer-regular.your-domain.com/auth/oidc/callback"
+    #
+    #   # Option 2: SAML
+    #   protocol: "Saml"
+    #   saml:
+    #     spEntityId: "your-sp-entity-id"         # Service Provider Entity ID
+    #     acsUrl: "https://anonymizer-regular.your-domain.com/saml/acs"
+    #     idpMetadataUrl: "https://your-idp.example.com/saml/descriptor"
+    #     idpCertificateThumbprint: "THUMBPRINT_HEX"  # IdP certificate thumbprint (hex)
     jobCorrelationId: "tobedeleted"
     product: anonymizer
     services:
@@ -102,7 +123,7 @@ spec:
     name: anonymizer
     environmentName: staging
     runtimeEnvironment: staging
-    packageVersion: 1.0.509 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    packageVersion: 1.0.553 # {"$imagepolicy": "flux-system:anonymizer:tag"}
     jobCorrelationId: "tobedeleted"
     checkRollback:
       enabled: false
