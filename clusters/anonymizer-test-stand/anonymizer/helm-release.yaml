@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: anonymizer-app
-      version: 3.15.0 # {"$imagepolicy": "flux-system:anonymizer-chart:tag"}
+      version: 3.18.5 # {"$imagepolicy": "flux-system:anonymizer-chart:tag"}
       sourceRef:
         kind: HelmRepository
         name: anonymizer
@@ -27,7 +27,7 @@ spec:
     #   enabled: true
     environmentName: sigma  #will be provided by Mindbox manager
     tenant: anonymizer-demo  #will be provided by Mindbox manager
-    packageVersion: 1.0.553 # {"$imagepolicy": "flux-system:anonymizer:tag"}
+    packageVersion: 1.0.632 # {"$imagepolicy": "flux-system:anonymizer:tag"}
     # auth:  # Optional authentication via IdP — choose one protocol (OIDC or SAML), do not configure both
     #
     #   # Option 1: OIDC
@@ -101,6 +101,16 @@ spec:
               name: manual-secrets
               key: MindboxAuth__MindboxPublicKey
     services:
+      # outboundRequestHostOverrides — set this ONLY if your infrastructure uses DNS
+      # overrides for the anonymizer's own domain (split-horizon: the same public address
+      # resolves differently inside the cluster than outside). In that case the anonymizer's
+      # calls to its own public address break and must be redirected to the in-cluster
+      # service of the matching role. No DNS overrides of your own domain — leave it commented out.
+      # outboundRequestHostOverrides:
+      #   - host: anonymizer-regular.company-name.ru
+      #     role: regular
+      #   - host: anonymizer-important.company-name.ru
+      #     role: important
       # # Пример настройки affinity & tolerations
       #   nodeAffinity:
       #     preferredDuringSchedulingIgnoredDuringExecution:
