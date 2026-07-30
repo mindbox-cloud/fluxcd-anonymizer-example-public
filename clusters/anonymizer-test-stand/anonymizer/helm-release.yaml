@@ -27,7 +27,6 @@ spec:
     #   enabled: true
     environmentName: sigma  #will be provided by Mindbox manager
     tenant: anonymizer-demo  #will be provided by Mindbox manager
-    packageVersion: 1.0.632 # {"$imagepolicy": "flux-system:anonymizer:tag"}
     # auth:  # Optional authentication via IdP — choose one protocol (OIDC or SAML), do not configure both
     #
     #   # Option 1: OIDC
