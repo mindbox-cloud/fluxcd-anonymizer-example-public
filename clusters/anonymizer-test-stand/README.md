@@ -82,7 +82,9 @@ type: Opaque
 - **db-anonymizer-anonymizer-user-password** - логин и пароль пользователя PostgreSQL
 - **oidc-credentials** - client secret OIDC-клиента в IdP. Значение предоставляет администратор IdP. Необходим только при использовании OIDC-аутентификации.
 
-### Опционально: Basic auth для метрик (`/metrics`)
+### Опционально: Basic auth для метрик сервисов (`/metrics`)
+
+Рекомендуется для включения, если не настроены ingress правила для входящих запросов.
 
 По умолчанию эндпоинт `/metrics` анонимный. Чтобы закрыть его Basic-аутентификацией, создайте секрет с логином/паролем и включите `metricsAuth` в values.
 
@@ -104,7 +106,7 @@ metricsAuth:
 
 После раската приложение потребует Basic-креды на `/metrics`, а внутрикластерные скреперы (ServiceMonitor/VMServiceScrape и metrics-proxy) будут ходить с теми же кредами из секрета — автоматически.
 
-> Требуется образ приложения с поддержкой `MetricsAuth` (`packageVersion` ≥ `1.0.645`). Ключи секрета по умолчанию — `username`/`password`; переопределяются через `metricsAuth.usernameKey` / `metricsAuth.passwordKey`. Секрет должен существовать **до** включения `metricsAuth.enabled`, иначе поды не стартуют.
+> Ключи секрета по умолчанию — `username`/`password`; переопределяются через `metricsAuth.usernameKey` / `metricsAuth.passwordKey`. Секрет должен существовать **до** включения `metricsAuth.enabled`, иначе поды не стартуют.
 
 ### 4. Завершение деплоя
 
