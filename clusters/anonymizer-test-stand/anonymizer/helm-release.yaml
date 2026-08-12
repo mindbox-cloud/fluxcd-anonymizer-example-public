@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: anonymizer-app
-      version: 3.18.5 # {"$imagepolicy": "flux-system:anonymizer-chart:tag"}
+      version: 3.18.13 # {"$imagepolicy": "flux-system:anonymizer-chart:tag"}
       sourceRef:
         kind: HelmRepository
         name: anonymizer
