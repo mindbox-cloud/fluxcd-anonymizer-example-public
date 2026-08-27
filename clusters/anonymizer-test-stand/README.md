@@ -1,5 +1,8 @@
 # Anonymizer Test Stand
 
+> Пример разворачивания анонимайзера без anonymizer-gate (рассылка с помощью Mindbox). 
+> Используйте фолдер [`anonymizer-with-gate`](./anonymizer-with-gate/README.md) - если вы планируете использовать сами отправлять сообщения
+
 ## Зависимости
 
 Данный вариант развертывания использует CR `monitoring.coreos.com/v1:PrometheusRule`.
@@ -9,10 +12,6 @@
 ### 1. Копирование конфигурации
 
 Скопируй себе в получившийся fluxcd репозиторий фолдер `anonymizer`.
-
-> Если помимо основного анонимайзера вам нужен `anonymizer-gate`, вместо фолдера `anonymizer`
-> используйте фолдер [`anonymizer-with-gate`](./anonymizer-with-gate/README.md) — он содержит
-> те же манифесты плюс включённый gate. Копировать нужно только один из двух фолдеров.
 
 ### 2. Проверка Helm values
 
