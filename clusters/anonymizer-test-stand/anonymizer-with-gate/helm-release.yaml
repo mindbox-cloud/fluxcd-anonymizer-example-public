@@ -1,0 +1,242 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: anonymizer
+  namespace: anonymizer
+spec:
+  type: "oci"
+  interval: 168h
+  url: oci://cr.yandex/crp2cvbrp76d7dmfegco/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: anonymizer
+  namespace: anonymizer
+spec:
+  chart:
+    spec:
+      chart: anonymizer-app
+      version: 3.21.0 # {"$imagepolicy": "flux-system:anonymizer-chart:tag"}
+      sourceRef:
+        kind: HelmRepository
+        name: anonymizer
+  interval: 168h
+  values:
+    # victoriametrics:  #will replace prometheus CRs with victoriametrics CRs
+    #   enabled: true
+    environmentName: sigma  #will be provided by Mindbox manager
+    tenant: anonymizer-demo  #will be provided by Mindbox manager
+    bulkOperationProcessing:
+        gzipForAllExport: true
+    # auth:  # Optional authentication via IdP — choose one protocol (OIDC or SAML), do not configure both
+    #
+    #   # Option 1: OIDC
+    #   protocol: "Oidc"
+    #   oidc:
+    #     clientId: "your-client-id"              # Client ID in IdP
+    #     clientSecret:
+    #       valueFrom:
+    #         secretKeyRef:
+    #           name: oidc-credentials
+    #           key: client_secret
+    #     wellKnownUrl: "https://your-idp.example.com/.well-known/openid-configuration"
+    #     callbackUrl: "https://anonymizer-regular.your-domain.com/auth/oidc/callback"
+    #
+    #   # Option 2: SAML
+    #   protocol: "Saml"
+    #   saml:
+    #     spEntityId: "your-sp-entity-id"         # Service Provider Entity ID
+    #     acsUrl: "https://anonymizer-regular.your-domain.com/saml/acs"
+    #     idpMetadataUrl: "https://your-idp.example.com/saml/descriptor"
+    #     idpCertificateThumbprint: "THUMBPRINT_HEX"  # IdP certificate thumbprint (hex)
+    mandatoryEnv:
+      s3:
+        private:
+          serviceUrl: "https://s3.yandexcloud.net/"
+          bucketName: "anonymizer-test-stand-bucket"
+          accessKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Private__AccessKey
+          secretKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Private__SecretKey
+        public:
+          serviceUrl: "https://s3.yandexcloud.net/"
+          bucketName: "bucket-anonymizer-clients-public"
+          accessKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Public__AccessKey
+          secretKey:
+            valueFrom:
+              secretKeyRef:
+                name: manual-secrets
+                key: S3__Public__SecretKey
+      postgreSqlDatabase:
+        username:
+          valueFrom:
+            secretKeyRef:
+              name: db-anonymizer-anonymizer-user-password
+              key: username
+        password:
+          valueFrom:
+            secretKeyRef:
+              name: db-anonymizer-anonymizer-user-password
+              key: password
+        connectionString: "Host=c-c9q0iffnprn9ic4nqc9k.rw.mdb.yandexcloud.net ;Database=anonymizer-demo-v2;SSL Mode=Require;Port=6432;Maximum Pool Size=200;Enlist=false;"
+      mindboxAuth:
+        anonymizerPrivateKey:
+          valueFrom:
+            secretKeyRef:
+              name: manual-secrets
+              key: MindboxAuth__AnonymizerPrivateKey
+        mindboxPublicKey:
+          valueFrom:
+            secretKeyRef:
+              name: manual-secrets
+              key: MindboxAuth__MindboxPublicKey
+    services:
+      # outboundRequestHostOverrides — set this ONLY if your infrastructure uses DNS
+      # overrides for the anonymizer's own domain (split-horizon: the same public address
+      # resolves differently inside the cluster than outside). In that case the anonymizer's
+      # calls to its own public address break and must be redirected to the in-cluster
+      # service of the matching role. No DNS overrides of your own domain — leave it commented out.
+      # outboundRequestHostOverrides:
+      #   - host: anonymizer-regular.company-name.ru
+      #     role: regular
+      #   - host: anonymizer-important.company-name.ru
+      #     role: important
+      # # Пример настройки affinity & tolerations
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: node-type
+      #           operator: In
+      #           values:
+      #           - compute-optimized
+      # tolerations:
+      # - key: "node-type"
+      #   operator: "Equal"
+      #   value: "compute-optimized"
+      #   effect: "NoSchedule"
+      roles:
+        regular:
+          replicas: "3"
+          resources:
+            limits:
+              memory: "512Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+        important:
+          replicas: "3"
+          resources:
+            limits:
+              memory: "512Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+    lrt:
+      # # Пример настройки affinity & tolerations
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: node-type
+      #           operator: In
+      #           values:
+      #           - compute-optimized
+      # tolerations:
+      # - key: "node-type"
+      #   operator: "Equal"
+      #   value: "compute-optimized"
+      #   effect: "NoSchedule"
+      roles:
+        default:
+          replicas: "3"
+          resources:
+            limits:
+              memory: "1024Mi"
+            requests:
+              cpu: "800m"
+              memory: "256Mi"
+    # migrations:  #If u are using YC managed postgresql set PostgreSqlDatabase__ApplyMaintenanceMigrations env to false like this:
+    #   env:
+    #     - name: PostgreSqlDatabase__ApplyMaintenanceMigrations
+    #       value: "false"
+    # validation:  # Phone number validation settings — allowed country codes with min/max digit lengths (excluding country code)
+    #   phoneSettings:
+    #     allowedCountryCodes:
+    #       - code: "7"         # Russia / Kazakhstan
+    #         phoneMinLength: 10
+    #         phoneMaxLength: 10
+    #       - code: "375"       # Belarus
+    #         phoneMinLength: 9
+    #         phoneMaxLength: 9
+    # commonEnv:  # enables secret key management in the anonymizer
+    #   # uncomment only after the manager confirms the keys have been transferred
+    #   - name: AnonymizerSecretKeysManagement__Enabled
+    #     value: "true"
+
+    # anonymizer-gate — отдельный сервис-шлюз, через который Mindbox обращается к вашему
+    # anonymizer по клиентским write-запросам (в отличие от основного anonymizer,
+    # который слушает запросы от anon-api-gate Mindbox). Включается отдельно от
+    # основного анонимайзера через gate.enabled.
+    gate:
+      enabled: true
+      # clientGateRegularUrl / clientGateImportantUrl — публичные адреса вашего client-gate
+      # в Mindbox для regular- и important-сообщений соответственно, их выдаёт менеджер.
+      # gate-lrt — общий воркер (роль default), но роутит исходящую доставку в нужный
+      # client-gate в зависимости от роли конкретного сообщения.
+      clientGateRegularUrl: "https://anon-client-gate.a.mindbox.ru"
+      clientGateImportantUrl: "https://anon-client-gate-important.a.mindbox.ru"
+      lrt:
+        roles:
+          default:
+            replicas: "2"
+            resources:
+              limits:
+                memory: "512Mi"
+              requests:
+                cpu: "100m"
+                memory: "256Mi"
+      # gate.services — как и основной anonymizer, gate-service делится на роли
+      # regular/important (каждая — отдельный деплоймент со своим GATE_ROLE).
+      services:
+        roles:
+          regular:
+            replicas: "2"
+            resources:
+              limits:
+                memory: "512Mi"
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
+          important:
+            replicas: "2"
+            resources:
+              limits:
+                memory: "512Mi"
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
+
+    # anonymizerGateMandatoryEnv — обязателен при gate.enabled: true.
+    # ClientGatePublicKey — публичный ключ client-gate Mindbox, которым anonymizer-gate
+    # проверяет подпись входящих запросов. Значение предоставляет менеджер Mindbox.
+    anonymizerGateMandatoryEnv:
+      clientGateAuth:
+        clientGatePublicKey:
+          valueFrom:
+            secretKeyRef:
+              name: client-gate-auth
+              key: ClientGatePublicKey

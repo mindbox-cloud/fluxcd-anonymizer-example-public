@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonymizer-regular-loadbalancer
+  namespace: anonymizer
+  labels:
+    app: anonymizer-services-regular
+spec:
+  type: LoadBalancer
+  selector:
+    app: anonymizer-services-regular
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonymizer-important-loadbalancer
+  namespace: anonymizer
+  labels:
+    app: anonymizer-services-important
+spec:
+  type: LoadBalancer
+  selector:
+    app: anonymizer-services-important
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonymizer-gate-regular-loadbalancer
+  namespace: anonymizer
+  labels:
+    app: anonymizer-gate-regular
+spec:
+  type: LoadBalancer
+  selector:
+    app: anonymizer-gate-regular
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonymizer-gate-important-loadbalancer
+  namespace: anonymizer
+  labels:
+    app: anonymizer-gate-important
+spec:
+  type: LoadBalancer
+  selector:
+    app: anonymizer-gate-important
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
