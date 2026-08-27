@@ -1,5 +1,8 @@
 # Anonymizer Test Stand
 
+> Пример разворачивания анонимайзера без anonymizer-gate (рассылка с помощью Mindbox). 
+> Используйте фолдер [`anonymizer-with-gate`](./anonymizer-with-gate/README.md) - если вы планируете использовать сами отправлять сообщения
+
 ## Зависимости
 
 Данный вариант развертывания использует CR `monitoring.coreos.com/v1:PrometheusRule`.
