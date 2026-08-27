@@ -25,7 +25,7 @@
 ```yaml
 gate:
   enabled: true
-  clientGateRegularUrl: "https://anon-client-gate.a.mindbox.ru"            # адреса выдаёт
+  clientGateRegularUrl: "https://anon-client-gate-regular.a.mindbox.ru"     # адреса выдаёт
   clientGateImportantUrl: "https://anon-client-gate-important.a.mindbox.ru" # менеджер Mindbox
   # ... resources/replicas для gate.lrt и gate.services
 

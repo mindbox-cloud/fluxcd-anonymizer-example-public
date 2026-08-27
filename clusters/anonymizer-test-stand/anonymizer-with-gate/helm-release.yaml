@@ -197,7 +197,7 @@ spec:
       # в Mindbox для regular- и important-сообщений соответственно, их выдаёт менеджер.
       # gate-lrt — общий воркер (роль default), но роутит исходящую доставку в нужный
       # client-gate в зависимости от роли конкретного сообщения.
-      clientGateRegularUrl: "https://anon-client-gate.a.mindbox.ru"
+      clientGateRegularUrl: "https://anon-client-gate-regular.a.mindbox.ru"
       clientGateImportantUrl: "https://anon-client-gate-important.a.mindbox.ru"
       lrt:
         roles:
