@@ -17,7 +17,7 @@ spec:
     name: anonymizer-chart
   policy:
     semver:
-      range: 3.x.x
+      range: 4.x.x
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
