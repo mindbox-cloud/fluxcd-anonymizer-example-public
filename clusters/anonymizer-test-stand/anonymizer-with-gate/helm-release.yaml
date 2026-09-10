@@ -182,10 +182,9 @@ spec:
     #       - code: "375"       # Belarus
     #         phoneMinLength: 9
     #         phoneMaxLength: 9
-    # commonEnv:  # enables secret key management in the anonymizer
-    #   # uncomment only after the manager confirms the keys have been transferred
-    #   - name: AnonymizerSecretKeysManagement__Enabled
-    #     value: "true"
+    commonEnv:  # enables secret key management in the anonymizer
+      - name: AnonymizerSecretKeysManagement__Enabled
+        value: "true"
 
     # anonymizer-gate — отдельный сервис-шлюз, через который Mindbox обращается к вашему
     # anonymizer по клиентским write-запросам (в отличие от основного anonymizer,
