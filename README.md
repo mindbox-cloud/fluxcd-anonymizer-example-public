@@ -55,3 +55,7 @@ flux bootstrap git \
 ## 3. Продолжи по инструкции установки анонимайзера
 
 [ТЫК](./clusters/anonymizer-test-stand/README.md)
+
+## Мониторинг
+
+Дашборды Grafana для слежения за метриками анонимайзера — [docs/dashboards](./docs/dashboards/README.md)
