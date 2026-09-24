@@ -165,12 +165,12 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by (pod_ip) (rate(http_requests_received_total{app=\"$app\",pod_ip=~\"$pod_ip\"}[2m]))",
+          "expr": "sum by (pod) (rate(http_requests_received_total{service=~\"$service\",pod=~\"$pod\"}[2m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{pod_ip}}",
+          "legendFormat": "{{pod}}",
           "refId": "A"
         }
       ],
@@ -281,7 +281,7 @@
                 "uid": "$datasource"
               },
               "editorMode": "code",
-              "expr": "avg(http_requests_in_progress{app=\"$app\",pod_ip=~\"$pod_ip\"}) by (method, exported_endpoint) > 0",
+              "expr": "avg(http_requests_in_progress{service=~\"$service\",pod=~\"$pod\"}) by (method, exported_endpoint) > 0",
               "legendFormat": "{{method}} {{exported_endpoint}}",
               "range": true,
               "refId": "A"
@@ -383,8 +383,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "sum(http_requests_in_progress{app=\"$app\",pod_ip=~\"$pod_ip\"}) by (pod_ip)",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "sum(http_requests_in_progress{service=~\"$service\",pod=~\"$pod\"}) by (pod)",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -484,9 +484,9 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "sum(rate(http_requests_received_total{app=\"$app\",pod_ip=~\"$pod_ip\"}[1m])) by (pod_ip)",
+              "expr": "sum(rate(http_requests_received_total{service=~\"$service\",pod=~\"$pod\"}[1m])) by (pod)",
               "interval": "",
-              "legendFormat": "{{method}} {{exported_endpoint}}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -595,9 +595,9 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "process_num_threads{app=\"$app\",pod_ip=~\"$pod_ip\"}",
+              "expr": "process_num_threads{service=~\"$service\",pod=~\"$pod\"}",
               "format": "time_series",
-              "legendFormat": "{{pod_ip}}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -692,9 +692,9 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "rate(process_cpu_seconds_total{app=\"$app\",pod_ip=~\"$pod_ip\"}[1m])",
+              "expr": "rate(process_cpu_seconds_total{service=~\"$service\",pod=~\"$pod\"}[1m])",
               "format": "time_series",
-              "legendFormat": "{{pod_ip}}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -790,8 +790,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "process_open_handles{app=\"$app\",pod_ip=~\"$pod_ip\"}",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "process_open_handles{service=~\"$service\",pod=~\"$pod\"}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -902,8 +902,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "dotnet_total_memory_bytes{app=\"$app\",pod_ip=~\"$pod_ip\"}",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "dotnet_total_memory_bytes{service=~\"$service\",pod=~\"$pod\"}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1000,8 +1000,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "process_private_memory_bytes{app=\"$app\",pod_ip=~\"$pod_ip\"}",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "process_private_memory_bytes{service=~\"$service\",pod=~\"$pod\"}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1098,8 +1098,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "process_virtual_memory_bytes{app=\"$app\",pod_ip=~\"$pod_ip\"}",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "process_virtual_memory_bytes{service=~\"$service\",pod=~\"$pod\"}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1196,8 +1196,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "process_working_set_bytes{app=\"$app\",pod_ip=~\"$pod_ip\"}",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "process_working_set_bytes{service=~\"$service\",pod=~\"$pod\"}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1308,9 +1308,9 @@
                 "uid": "$datasource"
               },
               "exemplar": true,
-              "expr": "sum(rate(dotnet_collection_count_total{app=\"$app\",pod_ip=~\"$pod_ip\",generation=\"0\"}[1m])) by (pod_ip)",
+              "expr": "sum(rate(dotnet_collection_count_total{service=~\"$service\",pod=~\"$pod\",generation=\"0\"}[1m])) by (pod)",
               "interval": "",
-              "legendFormat": "{{pod_ip}}",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1406,8 +1406,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "sum(rate(dotnet_collection_count_total{app=\"$app\",pod_ip=~\"$pod_ip\",generation=\"1\"}[1m])) by (pod_ip)",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "sum(rate(dotnet_collection_count_total{service=~\"$service\",pod=~\"$pod\",generation=\"1\"}[1m])) by (pod)",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1503,8 +1503,8 @@
               "datasource": {
                 "uid": "$datasource"
               },
-              "expr": "sum(rate(dotnet_collection_count_total{app=\"$app\",pod_ip=~\"$pod_ip\",generation=\"2\"}[1m])) by (pod_ip)",
-              "legendFormat": "{{pod_ip}}",
+              "expr": "sum(rate(dotnet_collection_count_total{service=~\"$service\",pod=~\"$pod\",generation=\"2\"}[1m])) by (pod)",
+              "legendFormat": "{{pod}}",
               "refId": "A"
             }
           ],
@@ -1542,14 +1542,14 @@
         "datasource": {
           "uid": "$datasource"
         },
-        "definition": "label_values(http_requests_received_total{namespace=\"anonymizer\"},app)",
+        "definition": "label_values(http_requests_received_total{namespace=\"anonymizer\"},service)",
         "includeAll": false,
-        "label": "app",
-        "name": "app",
+        "label": "service",
+        "name": "service",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(http_requests_received_total{namespace=\"anonymizer\"},app)",
+          "query": "label_values(http_requests_received_total{namespace=\"anonymizer\"},service)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -1568,14 +1568,14 @@
         "datasource": {
           "uid": "$datasource"
         },
-        "definition": "label_values(http_requests_received_total{namespace=\"anonymizer\", app=\"$app\"},pod_ip)",
+        "definition": "label_values(http_requests_received_total{namespace=\"anonymizer\", service=~\"$service\"},pod)",
         "includeAll": true,
-        "label": "pod_ip",
-        "name": "pod_ip",
+        "label": "pod",
+        "name": "pod",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(http_requests_received_total{namespace=\"anonymizer\", app=\"$app\"},pod_ip)",
+          "query": "label_values(http_requests_received_total{namespace=\"anonymizer\", service=~\"$service\"},pod)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

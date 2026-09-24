@@ -8,6 +8,8 @@
 | Anonymizer - Basic Service Metrics | [Anonymizer_-_Basic_Service_Metrics.json](./Anonymizer_-_Basic_Service_Metrics.json) |
 | Anonymizer - Instances Services Metrics | [Anonymizer_-_Instances_Services_Metrics.json](./Anonymizer_-_Instances_Services_Metrics.json) |
 
+Запросы опираются на лейблы, которые добавляет `ServiceMonitor`/`VMServiceScrape` из чарта `anonymizer-app`: `namespace`, `service`, `pod` и `exported_endpoint` (лейбл `endpoint` из метрик приложения переименовывается при скрейпе, так как конфликтует с одноимённым таргет-лейблом). Выбор сервиса делается через переменную `service`, пода — через `pod`.
+
 ## Anonymizer - Main Metrics
 
 **Назначение:** основной мониторинг сервиса Anonymizer с метриками производительности.
