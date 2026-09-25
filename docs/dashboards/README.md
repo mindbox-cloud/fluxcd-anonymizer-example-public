@@ -8,7 +8,18 @@
 | Anonymizer - Basic Service Metrics | [Anonymizer_-_Basic_Service_Metrics.json](./Anonymizer_-_Basic_Service_Metrics.json) |
 | Anonymizer - Instances Services Metrics | [Anonymizer_-_Instances_Services_Metrics.json](./Anonymizer_-_Instances_Services_Metrics.json) |
 
-Запросы опираются на лейблы, которые добавляет `ServiceMonitor`/`VMServiceScrape` из чарта `anonymizer-app`: `namespace`, `service`, `pod` и `exported_endpoint` (лейбл `endpoint` из метрик приложения переименовывается при скрейпе, так как конфликтует с одноимённым таргет-лейблом). Выбор сервиса делается через переменную `service`, пода — через `pod`.
+Запросы опираются на лейблы, которые добавляет `ServiceMonitor`/`VMServiceScrape` из чарта `anonymizer-app`: `namespace`, `service`, `pod` и `exported_endpoint` (лейбл `endpoint` из метрик приложения переименовывается при скрейпе, так как конфликтует с одноимённым таргет-лейблом). Если метрики собираются не через `ServiceMonitor`/`VMServiceScrape` из чарта, имена этих лейблов могут отличаться, и запросы придётся поправить.
+
+Переменные дашбордов:
+
+| Переменная | Назначение |
+|---|---|
+| `cluster` | Опциональная. Нужна, если один Prometheus/VictoriaMetrics собирает метрики нескольких кластеров. Если лейбла `cluster` нет, остаётся `All` и фильтр ничего не отсекает. Если кластер помечается другим лейблом, замените `cluster` в запросах дашборда. |
+| `namespace` | Namespace, в который установлен чарт. По умолчанию `anonymizer`. |
+| `service` | Сервис анонимайзера (роль `regular`, `important`, lrt, gate). |
+| `pod`, `route`, `endpoint`, `method` | Дополнительные фильтры на отдельных дашбордах. |
+
+Окна `rate`/`increase` заданы через `$__rate_interval`, поэтому дашборды работают при любом `scrape_interval`. Чтобы Grafana считала окно правильно, в настройках источника данных должен быть указан `Scrape interval`, совпадающий с реальным.
 
 ## Anonymizer - Main Metrics
 
