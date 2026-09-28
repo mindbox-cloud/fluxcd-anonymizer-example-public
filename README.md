@@ -59,3 +59,12 @@ flux bootstrap git \
 ## Мониторинг
 
 Дашборды Grafana для слежения за метриками анонимайзера — [docs/dashboards](./docs/dashboards/README.md)
+
+### Алерты
+
+Чарт создаёт в namespace релиза `PrometheusRule` (или `VMRule` при `victoriametrics.enabled: true`) с алертами и `ServiceMonitor`/`VMServiceScrape` для сбора метрик. Чтобы алерты заработали:
+
+- **Ваш Prometheus должен подхватывать эти ресурсы.** Чарт вешает на них лейблы из `prometheus.labels` (по умолчанию `mindbox/prometheus: common`) или `victoriametrics.labels`. Замените их на те, что ждут `ruleSelector` и `serviceMonitorSelector` вашего Prometheus. Например, kube-prometheus-stack по умолчанию выбирает ресурсы с лейблом `release: <имя релиза kube-prometheus-stack>`.
+- **Нужен kube-state-metrics** с `job="kube-state-metrics"`. На нём работают алерты о подах и ресурсах (`DeploymentPodsInsufficient`, `AnonymizerRoleHasZeroPods`, `MemoryRequestsNotEqualMemoryLimits`).
+- **Окно `rate` должно покрывать хотя бы 4 интервала скрейпа.** Оно задаётся значением `alertsRateWindow` (по умолчанию `1m`, подходит для скрейпа раз в 15s). При скрейпе раз в 30s поставьте `2m`, раз в 60s — `4m`, иначе алерты по метрикам запросов могут не срабатывать.
+- Ссылки `runbook_url` и `dashboard_url` в аннотациях ведут в Notion и Grafana Mindbox. Для своих дежурных используйте дашборды из [docs/dashboards](./docs/dashboards/README.md).

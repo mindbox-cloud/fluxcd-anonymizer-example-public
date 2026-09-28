@@ -868,7 +868,7 @@
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "(sum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/v3/operations/bulk\"}[$__rate_interval]))\n/\nsum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/v3/operations/bulk\"}[$__rate_interval])))\n* 100",
+              "expr": "(sum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/v3/operations/bulk\"}[$__rate_interval]))\n/\nsum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/v3/operations/bulk\"}[$__rate_interval])))\n* 100",
               "legendFormat": "{{path}}",
               "range": true,
               "refId": "A"
@@ -1157,7 +1157,7 @@
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "(sum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/customerData/send\"}[$__rate_interval]))\n/\nsum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/customerData/send\"}[$__rate_interval])))\n* 100",
+              "expr": "(sum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/customerData/send\"}[$__rate_interval]))\n/\nsum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=\"/customerData/send\"}[$__rate_interval])))\n* 100",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -1668,7 +1668,7 @@
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "(sum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/async\"}[$__rate_interval]))\n/\nsum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/async\"}[$__rate_interval])))\n* 100",
+              "expr": "(sum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/async\"}[$__rate_interval]))\n/\nsum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/async\"}[$__rate_interval])))\n* 100",
               "legendFormat": "{{path}}",
               "range": true,
               "refId": "A"
@@ -1679,7 +1679,7 @@
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "(sum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/sync\"}[$__rate_interval]))\n/\nsum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/sync\"}[$__rate_interval])))\n* 100",
+              "expr": "(sum by (path) (rate(anonymizer_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/sync\"}[$__rate_interval]))\n/\nsum by (path) (rate(api_response_counter{cluster=~\"$cluster\", namespace=~\"$namespace\", service=~\"$service\", code=\"200\", path=~\"/v3/(js/)?operations/sync\"}[$__rate_interval])))\n* 100",
               "instant": false,
               "legendFormat": "__auto",
               "range": true,
