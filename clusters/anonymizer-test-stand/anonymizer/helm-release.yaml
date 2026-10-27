@@ -183,6 +183,15 @@ spec:
     #         phoneMinLength: 9
     #         phoneMaxLength: 9
     #         phoneMaxLength: 8
+    # sftpHostKeys:  # SFTP host key pinning (chart 4.16.0+) — the anonymizer refuses an SFTP server whose host key does not match
+    #   required: true  # also refuse SFTP servers missing from hosts; list every SFTP server of your FTP integrations first
+    #   hosts:
+    #     - host: sftp.company-name.ru  # exactly as in the FTP integration settings
+    #       port: 22  # optional, the entry without port matches any port
+    #       fingerprints:  # every host key of the server: run `ssh-keygen -lf` on each /etc/ssh/ssh_host_*_key.pub on the server itself,
+    #                      # not `ssh-keyscan` over the network — during an attack it returns the attacker's key
+    #         - "SHA256:WSeWB9qxC3jmwEC1StFnLKvxOd2tGCf0kQqJ63vaWsw"  # ED25519
+    #         - "SHA256:WpUni0In+ACnLju1phiQc7v6RjalpsohB2EBDzzlHr0"  # RSA
     commonEnv:  # enables secret key management in the anonymizer
       - name: AnonymizerSecretKeysManagement__Enabled
         value: "true"
